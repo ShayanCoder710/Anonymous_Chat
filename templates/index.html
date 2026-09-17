@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="shortcut icon" href="../static/images/icons8-sent-16.png">
+    <meta charset="UTF-8">
+    <title>Anonymous Chat</title>
+</head>
+<body>
+
+    <div id="all">
+        <div id="messages"></div>
+        <div id="input-row">
+            <textarea id="msgInput" name="msg" placeholder="پیام خود را بنویسید ..."></textarea>
+            <button onclick="sendMsg()"><img src="../static/images/icons8-sent-64.png" alt="Send"></button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        const socket = io()
+        socket.on('history', (messages) => {
+            const messagesBox = document.getElementById('messages')
+            messages.forEach((msg) => {
+                addMessage(msg.text, msg.time)
+            })
+            messagesBox.scrollTop = messagesBox.scrollHeight
+        })
+
+        socket.on('msg', (data) => {
+            addMessage(data.text, data.time)
+        })
+
+        function addMessage(text, time) {
+            const messagesBox = document.getElementById('messages')
+            const p = document.createElement('p')
+            p.classList.add('message')
+            p.textContent = text
+            messagesBox.appendChild(p)
+            messagesBox.scrollTop = messagesBox.scrollHeight
+        }
+
+        function sendMsg() {
+            const input = document.getElementById('msgInput')
+            const message = input.value.trim()
+
+            if (message === "") return
+
+            socket.emit('msg', message)
+            input.value = ''
+            input.focus()
+        }
+    </script>
+
+</body>
+</html>
