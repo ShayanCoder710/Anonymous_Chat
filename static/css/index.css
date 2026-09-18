@@ -17,6 +17,7 @@
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
+    border-radius: 10px;
 }
 ::-webkit-scrollbar-track {
     background: #1e1e1e;
@@ -88,6 +89,7 @@ header {
     white-space: pre-wrap;
 }
 .message .time {
+    user-select: none;
     font-size: 11px;
     color: #888;
     align-self: flex-end;
@@ -158,4 +160,44 @@ textarea {
     border: 1px solid #000000;
     border-radius: 50%;
     padding: 7px;
+}
+.message {
+    padding: 10px 17px;
+    border-radius: 12px;
+    margin: 0;
+    max-width: 70%;
+    text-align: right;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.my-message {
+    background-color: #464646;
+    align-self: flex-start;
+}
+.other-message {
+    background-color: #252525;
+    align-self: flex-end;
+}
+.message > span:first-child {
+    white-space: pre-wrap;
+}
+.message .time {
+    font-size: 11px;
+    color: #aaa;
+    align-self: flex-end;
+}
+.message .name {
+    font-size: 12px;
+    font-weight: bold;
+    color: #6ab0ff;
+    text-align: right;
+}
+.my-message .name {
+    color: #55a1f7;
+}
+.other-message .name {
+    color: #ffb86b;
 }

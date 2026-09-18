@@ -24,23 +24,41 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
     <script>
         const socket = io()
+
+        let myName = null
+
+        socket.on('your_name', (name) => {
+            myName = name
+            console.log('👤 My Name:', myName)
+        })
+
         socket.on('history', (messages) => {
             const messagesBox = document.getElementById('messages')
             messages.forEach((msg) => {
-                addMessage(msg.text, msg.time)
+                addMessage(msg.text, msg.time, msg.user_id)
             })
             messagesBox.scrollTop = messagesBox.scrollHeight
         })
 
         socket.on('msg', (data) => {
-            addMessage(data.text, data.time)
+            addMessage(data.text, data.time, data.user_id)
         })
 
-        function addMessage(text, time) {
+        function addMessage(text, time, senderName) {
             const messagesBox = document.getElementById('messages')
 
             const p = document.createElement('p')
             p.classList.add('message')
+
+            if (senderName === myName) {
+                p.classList.add('my-message')
+            } else {
+                p.classList.add('other-message')
+            }
+
+            const nameSpan = document.createElement('span')
+            nameSpan.classList.add('name')
+            nameSpan.textContent = senderName
 
             const textSpan = document.createElement('span')
             textSpan.textContent = text
@@ -49,6 +67,7 @@
             timeSpan.classList.add('time')
             timeSpan.textContent = time
 
+            p.appendChild(nameSpan)
             p.appendChild(textSpan)
             p.appendChild(timeSpan)
             messagesBox.appendChild(p)
