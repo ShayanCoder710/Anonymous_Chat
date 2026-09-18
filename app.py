@@ -4,9 +4,7 @@ from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
 import random
 
-NAMES = [
-    'سادیسم', 'سرطان', 'دلقک', 'کچل', 'بیکار', 'حاکر'
-]
+NAMES = ['هوشنگ', 'خدای تکلنولوژی', 'کوین میتنیک', 'تری دیویس', 'ایلان ماسک', 'بیل گیتس', 'حاکر ناسا']
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Shayan...'
