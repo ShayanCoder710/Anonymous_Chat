@@ -10,6 +10,10 @@
 <body>
 
     <div id="all">
+        <div id="chat-header">
+            <img src="../static/images/icons8-sent-64.png">
+            <h2>چت ناشناس</h2>
+        </div>
         <div id="messages"></div>
         <div id="input-row">
             <textarea id="msgInput" name="msg" placeholder="پیام خود را بنویسید ..."></textarea>
@@ -34,9 +38,19 @@
 
         function addMessage(text, time) {
             const messagesBox = document.getElementById('messages')
+
             const p = document.createElement('p')
             p.classList.add('message')
-            p.textContent = text
+
+            const textSpan = document.createElement('span')
+            textSpan.textContent = text
+
+            const timeSpan = document.createElement('span')
+            timeSpan.classList.add('time')
+            timeSpan.textContent = time
+
+            p.appendChild(textSpan)
+            p.appendChild(timeSpan)
             messagesBox.appendChild(p)
             messagesBox.scrollTop = messagesBox.scrollHeight
         }
