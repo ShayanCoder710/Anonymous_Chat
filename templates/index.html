@@ -12,7 +12,10 @@
     <div id="all">
         <div id="chat-header">
             <img src="../static/images/icons8-sent-64.png">
-            <h2>چت ناشناس</h2>
+            <div id="header-text">
+                <h2>چت ناشناس</h2>
+                <span id="myName">در حال دریافت نام ...</span>
+            </div>
         </div>
         <div id="messages"></div>
         <div id="input-row">
@@ -29,7 +32,7 @@
 
         socket.on('your_name', (name) => {
             myName = name
-            console.log('👤 My Name:', myName)
+            document.getElementById('myName').textContent = name
         })
 
         socket.on('history', (messages) => {

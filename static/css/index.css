@@ -101,7 +101,7 @@ button {
     justify-content: center;
     width: 45px;
     height: 46px;
-    background-color: #202020;
+    background-color: #222222;
     border: 1px solid #3a3a3a;
     border-radius: 8px;
     cursor: pointer;
@@ -146,17 +146,27 @@ textarea {
     border-radius: 10px;
     flex-shrink: 0;
 }
+#header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
 #chat-header h2 {
     font-size: 18px;
     font-weight: normal;
     color: #e0e0e0;
+}
+#myName {
+    font-size: 13px;
+    font-weight: bold;
+    color: #6ab0ff;
 }
 #chat-header img {
     width: 50px;
     height: 50px;
     object-fit: contain;
     transform: rotate(270deg);
-    background-color: #fff;
+    background-color: #e7e7e7;
     border: 1px solid #000000;
     border-radius: 50%;
     padding: 7px;
