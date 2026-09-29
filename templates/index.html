@@ -87,6 +87,13 @@
             input.value = ''
             input.focus()
         }
+
+        document.getElementById('msgInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault()
+                sendMsg()
+            }
+        })
     </script>
 
 </body>
