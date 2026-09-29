@@ -14,7 +14,10 @@
             <img src="../static/images/icons8-sent-64.png">
             <div id="header-text">
                 <h2>چت ناشناس</h2>
-                <span id="myName">در حال دریافت نام ...</span>
+                <div id="header-sub">
+                    <span id="onlineCount"></span>
+                    <span id="myName">در حال دریافت نام ...</span>
+                </div>
             </div>
         </div>
         <div id="messages"></div>
@@ -43,6 +46,10 @@
                 addMessage(msg.text, msg.time, msg.user_id)
             })
             messagesBox.scrollTop = messagesBox.scrollHeight
+        })
+
+        socket.on('online_count', (count) => {
+            document.getElementById('onlineCount').textContent = `${count} نفر آنلاین`
         })
 
         socket.on('msg', (data) => {

@@ -54,10 +54,14 @@ def handle_connect():
     ]
     emit('history', history)
 
+    socketio.emit('online_count', len(connected_users))
+
 
 @socketio.on('disconnect')
 def handle_disconnect():
     connected_users.pop(request.sid, None)
+
+    socketio.emit('online_count', len(connected_users))
 
 
 @socketio.on('msg')
