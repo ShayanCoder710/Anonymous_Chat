@@ -6,6 +6,8 @@ import random
 
 NAMES = ['خدای تکلنولوژی', 'کوین میتنیک', 'تری دیویس', 'ایلان ماسک', 'بیل گیتس', 'حاکر ناسا', 'لینوس توروالدز', 'ریچارد استالمن']
 
+MAX_LEN = 500
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Shayan...'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat.db'
@@ -17,7 +19,7 @@ socketio = SocketIO(app)
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(500), nullable=False)
+    text = db.Column(db.String(MAX_LEN), nullable=False)
     user_id = db.Column(db.String(50), nullable=True)
     time = db.Column(db.DateTime, default=lambda: datetime.utcnow() + timedelta(hours=3, minutes=30))
 
@@ -61,6 +63,14 @@ def handle_disconnect():
 @socketio.on('msg')
 def handle_msg(data):
     name = connected_users.get(request.sid, 'ناشناس')
+
+    if not isinstance(data, str) or len(data) > MAX_LEN:
+        return
+
+    data = data.strip()
+
+    if not data:
+        return
 
     new_msg = Message(text=data, user_id=name)
     db.session.add(new_msg)

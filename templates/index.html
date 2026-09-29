@@ -28,6 +28,8 @@
     <script>
         const socket = io()
 
+        const MAX_LEN = 500
+
         let myName = null
 
         socket.on('your_name', (name) => {
@@ -83,13 +85,18 @@
 
             if (message === "") return
 
+            if (message.length > MAX_LEN) {
+                alert(`حداکثر ${MAX_LEN} کاراکتر مجاز است.\nشما ${message.length} کاراکتر نوشته‌اید.`)
+                return
+            }
+
             socket.emit('msg', message)
             input.value = ''
             input.focus()
         }
 
         document.getElementById('msgInput').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
+            if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
                 e.preventDefault()
                 sendMsg()
             }
