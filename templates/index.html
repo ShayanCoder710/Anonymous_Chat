@@ -9,6 +9,17 @@
 </head>
 <body>
 
+    <div id="name-screen">
+        <div id="name-box">
+            <img src="../static/images/icons8-sent-64.png">
+            <h2>یک نام انتخاب کنید</h2>
+            <p>این نام دائمی است. بعد از انتخاب، دیگر قابل تغییر نیست.</p>
+            <input id="nameInput" type="text" maxlength="30" placeholder="نام شما" autocomplete="off">
+            <span id="nameError"></span>
+            <button id="nameBtn">ورود به چت</button>
+        </div>
+    </div>
+
     <div id="all">
         <div id="chat-header">
             <img src="../static/images/icons8-sent-64.png">
@@ -35,9 +46,19 @@
 
         let myName = null
 
-        socket.on('your_name', (name) => {
-            myName = name
-            document.getElementById('myName').textContent = name
+        socket.on('claim_error', (msg) => {
+            document.getElementById('nameError').textContent = msg
+        })
+
+        socket.on('name_ok', (data) => {
+            if (data.token) {
+                localStorage.setItem('chatName', data.name)
+                localStorage.setItem('chatToken', data.token)
+            }
+
+            myName = data.name
+            document.getElementById('myName').textContent = data.name
+            document.getElementById('name-screen').style.display = 'none'
         })
 
         socket.on('history', (messages) => {
@@ -100,6 +121,36 @@
             socket.emit('msg', message)
             input.value = ''
             input.focus()
+        }
+
+        document.getElementById('nameBtn').addEventListener('click', claimName)
+
+        document.getElementById('nameInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.isComposing) {
+                e.preventDefault()
+                claimName()
+            }
+        })
+
+        function claimName() {
+            const name = document.getElementById('nameInput').value.trim()
+            document.getElementById('nameError').textContent = ''
+
+            if (name === '') {
+                document.getElementById('nameError').textContent = 'نام نمی‌تواند خالی باشد.'
+                return
+            }
+
+            socket.emit('claim_name', { name: name, token: localStorage.getItem('chatToken') })
+        }
+
+        const savedName = localStorage.getItem('chatName')
+        const savedToken = localStorage.getItem('chatToken')
+
+        if (savedName && savedToken) {
+            socket.emit('claim_name', { name: savedName, token: savedToken })
+        } else {
+            document.getElementById('nameInput').focus()
         }
 
         document.getElementById('msgInput').addEventListener('keydown', (e) => {

@@ -2,11 +2,11 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
-import random
-
-NAMES = ['خدای تکلنولوژی', 'کوین میتنیک', 'تری دیویس', 'ایلان ماسک', 'بیل گیتس', 'حاکر ناسا', 'لینوس توروالدز', 'ریچارد استالمن']
+import hashlib
+import secrets
 
 MAX_LEN = 500
+MAX_NAME_LEN = 30
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Shayan...'
@@ -20,8 +20,14 @@ socketio = SocketIO(app)
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(MAX_LEN), nullable=False)
-    user_id = db.Column(db.String(50), nullable=True)
+    user_id = db.Column(db.String(MAX_NAME_LEN), nullable=True)
     time = db.Column(db.DateTime, default=lambda: datetime.utcnow() + timedelta(hours=3, minutes=30))
+
+
+class Name(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(MAX_NAME_LEN), unique=True, nullable=False)
+    token_hash = db.Column(db.String(64), nullable=False)
 
 
 with app.app_context():
@@ -36,13 +42,16 @@ def index():
 connected_users = {}
 
 
-@socketio.on('connect')
-def handle_connect():
-    name = random.choice(NAMES)
-    connected_users[request.sid] = name
+def hash_token(token):
+    return hashlib.sha256(token.encode('utf-8')).hexdigest()
 
-    emit('your_name', name)
 
+def valid_name(name):
+    name = name.strip()
+    return 1 <= len(name) <= MAX_NAME_LEN
+
+
+def send_history(sid):
     messages = Message.query.order_by(Message.time).all()
     history = [
         {
@@ -52,9 +61,51 @@ def handle_connect():
         }
         for m in messages
     ]
-    emit('history', history)
+    emit('history', history, to=sid)
 
+
+@socketio.on('claim_name')
+def handle_claim_name(data):
+    if not isinstance(data, dict):
+        return
+
+    name = data.get('name', '')
+    token = data.get('token')
+
+    if not isinstance(name, str) or (token is not None and not isinstance(token, str)):
+        return
+
+    if not valid_name(name):
+        emit('claim_error', 'نام باید بین ۱ تا ۳۰ کاراکتر باشد.')
+        return
+
+    if token:
+        known = Name.query.filter_by(token_hash=hash_token(token)).first()
+
+        if known:
+            connected_users[request.sid] = known.name
+            emit('name_ok', {'name': known.name, 'token': None})
+            send_history(request.sid)
+            socketio.emit('online_count', len(connected_users))
+            return
+
+    if Name.query.filter_by(name=name).first():
+        emit('claim_error', 'این نام قبلاً استفاده شده. یک نام دیگر انتخاب کنید.')
+        return
+
+    new_token = secrets.token_urlsafe(32)
+    db.session.add(Name(name=name, token_hash=hash_token(new_token)))
+    db.session.commit()
+
+    connected_users[request.sid] = name
+    emit('name_ok', {'name': name, 'token': new_token})
+    send_history(request.sid)
     socketio.emit('online_count', len(connected_users))
+
+
+@socketio.on('connect')
+def handle_connect():
+    emit('online_count', len(connected_users))
 
 
 @socketio.on('disconnect')
