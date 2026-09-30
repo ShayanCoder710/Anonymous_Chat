@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <div id="name-screen">
+    <div id="name-screen" style="display: none;">
         <div id="name-box">
             <img src="../static/images/icons8-sent-64.png">
             <h2>یک نام انتخاب کنید</h2>
@@ -40,14 +40,24 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
     <script>
-        const socket = io()
+        const socket = io({ autoConnect: false })
 
         const MAX_LEN = 500
 
         let myName = null
 
+        socket.on('connect', () => {
+            const name = localStorage.getItem('chatName')
+            const token = localStorage.getItem('chatToken')
+
+            if (name && token) {
+                socket.emit('claim_name', { name: name, token: token })
+            }
+        })
+
         socket.on('claim_error', (msg) => {
             document.getElementById('nameError').textContent = msg
+            document.getElementById('name-screen').style.display = 'flex'
         })
 
         socket.on('name_ok', (data) => {
@@ -63,6 +73,8 @@
 
         socket.on('history', (messages) => {
             const messagesBox = document.getElementById('messages')
+            messagesBox.innerHTML = ''
+
             messages.forEach((msg) => {
                 addMessage(msg.text, msg.time, msg.user_id)
             })
@@ -148,10 +160,14 @@
         const savedToken = localStorage.getItem('chatToken')
 
         if (savedName && savedToken) {
-            socket.emit('claim_name', { name: savedName, token: savedToken })
+            myName = savedName
+            document.getElementById('myName').textContent = savedName
         } else {
+            document.getElementById('name-screen').style.display = 'flex'
             document.getElementById('nameInput').focus()
         }
+
+        socket.connect()
 
         document.getElementById('msgInput').addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {

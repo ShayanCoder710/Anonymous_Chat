@@ -2,10 +2,12 @@
     font-family: "Ario";
     src: url(../font/ArioNonEn-Dots2.ttf);
 }
+
 @font-face {
     font-family: "JB";
     src: url(../font/JetBrainsMono-ExtraBold.ttf);
 }
+
 * {
     font-family: "JB", Ario;
     margin: 0;
@@ -14,24 +16,30 @@
     scrollbar-width: thin;
     scrollbar-color: #484848 #0f0f0f;
 }
+
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
     border-radius: 10px;
 }
+
 ::-webkit-scrollbar-track {
     background: #1e1e1e;
 }
+
 ::-webkit-scrollbar-thumb {
     background: #363636;
     border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
     background: #242424;
 }
+
 body {
     background-color: #0d0d0d;
 }
+
 header {
     width: 70%;
     max-width: 550px;
@@ -41,6 +49,7 @@ header {
     border: 7px solid #2a2a2a;
     border-radius: 15px;
 }
+
 #name-screen {
     position: fixed;
     inset: 0;
@@ -50,6 +59,7 @@ header {
     justify-content: center;
     z-index: 10;
 }
+
 #name-box {
     width: 90%;
     max-width: 400px;
@@ -63,6 +73,7 @@ header {
     gap: 12px;
     text-align: center;
 }
+
 #name-box img {
     width: 60px;
     height: 60px;
@@ -73,16 +84,19 @@ header {
     border-radius: 50%;
     padding: 7px;
 }
+
 #name-box h2 {
     font-size: 19px;
     font-weight: normal;
     color: #e0e0e0;
 }
+
 #name-box p {
     font-size: 12px;
     color: #8f8f8f;
     line-height: 1.6;
 }
+
 #nameInput {
     all: unset;
     width: 100%;
@@ -93,14 +107,17 @@ header {
     border-radius: 6px;
     font-size: 16px;
 }
+
 #nameInput:focus {
     border-color: #6ab0ff;
 }
+
 #nameError {
     font-size: 12px;
     color: #ff6b6b;
     min-height: 15px;
 }
+
 #nameBtn {
     width: 100%;
     height: 42px;
@@ -111,9 +128,11 @@ header {
     font-size: 15px;
     font-weight: bold;
 }
+
 #nameBtn:hover {
     background-color: #3a7de0;
 }
+
 #all {
     width: 98%;
     height: 97vh;
@@ -128,6 +147,7 @@ header {
     box-sizing: border-box;
     margin-top: 1.5vh;
 }
+
 #messages {
     flex: 1;
     overflow-y: auto;
@@ -139,11 +159,13 @@ header {
     gap: 8px;
     min-height: 0;
 }
+
 #input-row {
     display: flex;
     gap: 10px;
     align-items: center;
 }
+
 .message {
     background-color: #252525;
     padding: 10px 17px;
@@ -158,15 +180,18 @@ header {
     flex-direction: column;
     gap: 4px;
 }
-.message > span:first-child {
+
+.message>span:first-child {
     white-space: pre-wrap;
 }
+
 .message .time {
     user-select: none;
     font-size: 11px;
     color: #888;
     align-self: flex-end;
 }
+
 button {
     all: unset;
     display: flex;
@@ -180,19 +205,24 @@ button {
     cursor: pointer;
     transition: all 0.3s ease-in-out;
     flex-shrink: 0;
+    user-select: none;
 }
+
 button:hover {
     background-color: #353535;
 }
+
 button:active {
     transform: scale(0.95);
 }
+
 button img {
     width: 30px;
     height: 30px;
     object-fit: contain;
     transform: scaleX(-1);
 }
+
 textarea {
     all: unset;
     text-align: right;
@@ -208,6 +238,7 @@ textarea {
     resize: none;
     line-height: 1.5;
 }
+
 #chat-header {
     display: flex;
     justify-content: flex-start;
@@ -219,31 +250,37 @@ textarea {
     border-radius: 10px;
     flex-shrink: 0;
 }
+
 #header-text {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
+
 #header-sub {
     display: flex;
     align-items: center;
     gap: 12px;
 }
+
 #chat-header h2 {
     font-size: 18px;
     font-weight: normal;
     color: #e0e0e0;
 }
+
 #myName {
     font-size: 13px;
     font-weight: bold;
     color: #6ab0ff;
 }
+
 #onlineCount {
     font-size: 12px;
     color: #8f8f8f;
     user-select: none;
 }
+
 #chat-header img {
     width: 50px;
     height: 50px;
@@ -254,6 +291,7 @@ textarea {
     border-radius: 50%;
     padding: 7px;
 }
+
 .message {
     padding: 10px 17px;
     border-radius: 12px;
@@ -266,31 +304,38 @@ textarea {
     flex-direction: column;
     gap: 4px;
 }
+
 .my-message {
     background-color: #464646;
     align-self: flex-start;
 }
+
 .other-message {
     background-color: #252525;
     align-self: flex-end;
 }
-.message > span:first-child {
+
+.message>span:first-child {
     white-space: pre-wrap;
 }
+
 .message .time {
     font-size: 11px;
     color: #aaa;
     align-self: flex-end;
 }
+
 .message .name {
     font-size: 12px;
     font-weight: bold;
     color: #6ab0ff;
     text-align: right;
 }
+
 .my-message .name {
     color: #55a1f7;
 }
+
 .other-message .name {
     color: #ffb86b;
 }
