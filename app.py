@@ -4,9 +4,12 @@ from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
 import secrets
+import time
 
 MAX_LEN = 500
 MAX_NAME_LEN = 30
+RATE_LIMIT = 3
+RATE_WINDOW = 10
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Shayan...'
@@ -40,6 +43,7 @@ def index():
 
 
 connected_users = {}
+user_times = {}
 
 
 def hash_token(token):
@@ -49,6 +53,14 @@ def hash_token(token):
 def valid_name(name):
     name = name.strip()
     return 1 <= len(name) <= MAX_NAME_LEN
+
+
+def rate_limited(sid):
+    now = time.monotonic()
+    recent = [t for t in user_times.get(sid, []) if now - t < RATE_WINDOW]
+    recent.append(now)
+    user_times[sid] = recent
+    return len(recent) > RATE_LIMIT
 
 
 def send_history(sid):
@@ -111,6 +123,7 @@ def handle_connect():
 @socketio.on('disconnect')
 def handle_disconnect():
     connected_users.pop(request.sid, None)
+    user_times.pop(request.sid, None)
 
     socketio.emit('online_count', len(connected_users))
 
@@ -125,6 +138,10 @@ def handle_msg(data):
     data = data.strip()
 
     if not data:
+        return
+
+    if rate_limited(request.sid):
+        emit('rate_limit', 'شما بیش از حد سریع پیام می‌فرستید. کمی صبر کنید.')
         return
 
     new_msg = Message(text=data, user_id=name)

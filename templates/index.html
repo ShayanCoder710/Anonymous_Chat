@@ -44,6 +44,12 @@
 
         const MAX_LEN = 500
 
+        const FA_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹']
+
+        function faNum(n) {
+            return String(n).replace(/\d/g, (d) => FA_DIGITS[+d])
+        }
+
         let myName = null
 
         socket.on('connect', () => {
@@ -82,7 +88,11 @@
         })
 
         socket.on('online_count', (count) => {
-            document.getElementById('onlineCount').textContent = `${count} نفر آنلاین`
+            document.getElementById('onlineCount').textContent = `${faNum(count)} نفر آنلاین`
+        })
+
+        socket.on('rate_limit', (msg) => {
+            alert(msg)
         })
 
         socket.on('msg', (data) => {
@@ -110,7 +120,7 @@
 
             const timeSpan = document.createElement('span')
             timeSpan.classList.add('time')
-            timeSpan.textContent = time
+            timeSpan.textContent = faNum(time)
 
             p.appendChild(nameSpan)
             p.appendChild(textSpan)
